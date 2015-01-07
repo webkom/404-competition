@@ -1,0 +1,21 @@
+{
+  "name": "abakus-404-competition-{{ cookiecutter.abakus_username }}",
+  "version": "1.0.0",
+  "description": "{{ cookiecutter.abakus_username }}s entry for abakus 404 competition",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "*"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-uglify": "^0.7.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-html-build": "^0.3.2"
+  }
+}

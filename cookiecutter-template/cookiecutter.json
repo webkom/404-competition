@@ -1,0 +1,6 @@
+{
+  "abakus_username": "abakus",
+  "full_name": "Abakus Linjeforening",
+  "project_name": "{{ cookiecutter.abakus_username }}",
+  "repo_name": "{{ cookiecutter.abakus_username }}"
+}

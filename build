@@ -1,0 +1,15 @@
+#! /bin/sh
+
+ENTRIES_PATH=entries
+
+mkdir -p dist/
+
+git submodule init
+git submodule update
+
+for dir in `ls $ENTRIES_PATH`;
+do
+  echo $dir
+  cd $ENTRIES_PATH/$dir && make clean setup && cd ../..
+  cp $ENTRIES_PATH/$dir/dist/$dir.html dist/.
+done

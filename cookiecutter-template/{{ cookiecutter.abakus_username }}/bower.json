@@ -1,0 +1,21 @@
+{
+  "name": "{{ cookiecutter.abakus_username }}",
+  "version": "0.0.0",
+  "homepage": "https://github.com/webkom/404-competition",
+  "authors": [
+    "{{ cookiecutter.full_name }}"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "~2.2.2"
+  }
+}
