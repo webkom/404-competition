@@ -1,6 +1,15 @@
 # 404-competition
 
+_If you need help with any of the following steps, feel free to send us an email at_ webkom@!
+
 Read more about the competition on [webkom.abakus.no/404-competition](http://webkom.abakus.no/404-competition)
+
+## What do I need?
+The easiest way to participate is to make sure [`git`](https://help.github.com/articles/set-up-git/), `make`
+and [`cookiecutter`](https://cookiecutter.readthedocs.org/en/latest/) is installed, and follow 'How to participate'.
+If you are more of a power user, you could do whatever you like, as long as the directory structure is the
+same as the supplied default project, and you can run `make setup`, and get the final  `.html` file in 
+`/entries/<username>/dist/<username>.html`.
 
 ## How to participate
 1. Fork repo and clone it
