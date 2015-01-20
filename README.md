@@ -1,5 +1,7 @@
 # 404-competition
 
+_If you need help with any of the following steps, feel free to send us an email at_ webkom@!
+
 Read more about the competition on [webkom.abakus.no/404-competition](http://webkom.abakus.no/404-competition)
 
 ## What do I need?
