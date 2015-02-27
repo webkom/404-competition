@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <script type="text/javascript" src="phaser.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.2.2/phaser.min.js"></script>
     <script>
 
         window.onload = function () {
@@ -99,7 +99,7 @@
                     };
 
                     // Starry background
-                    var starEmitter = game.add.playerExplosionEmitter(game.world.centerX, 0, 200);
+                    var starEmitter = game.add.emitter(game.world.centerX, 0, 200);
                     starEmitter.alpha = 0.6;
                     starEmitter.width = game.world.width;
                     starEmitter.makeParticles('pixel');
@@ -111,14 +111,14 @@
                     starEmitter.gravity = 0;
 
                     // Create particle playerExplosionEmitter for explosion effect
-                    this.enemyExplosionEmitter = game.add.playerExplosionEmitter(0, 0, 15);
+                    this.enemyExplosionEmitter = game.add.emitter(0, 0, 15);
                     this.enemyExplosionEmitter.makeParticles('redpixel');
                     this.enemyExplosionEmitter.setYSpeed(-150, 150);
                     this.enemyExplosionEmitter.setXSpeed(-150, 150);
                     this.enemyExplosionEmitter.gravity = 0;
 
                     // Create particle emitter for explosion effect
-                    this.playerExplosionEmitter = game.add.playerExplosionEmitter(0, 0, 15);
+                    this.playerExplosionEmitter = game.add.emitter(0, 0, 15);
                     this.playerExplosionEmitter.makeParticles('pixel');
                     this.playerExplosionEmitter.setYSpeed(-150, 150);
                     this.playerExplosionEmitter.setXSpeed(-150, 150);
