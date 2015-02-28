@@ -2,6 +2,18 @@
 <html>
 
 <head>
+    <style type="text/css">
+        @import url(http://fonts.googleapis.com/css?family=Geo);
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="true" />
+
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/phaser/2.2.2/phaser.min.js"></script>
     <script>
 
@@ -21,6 +33,25 @@
                     game.stage.backgroundColor = '#404';
                     game.physics.startSystem(Phaser.Physics.ARCADE);
 
+                    // If the device is not a desktop, so it's a mobile device
+                    if (!game.device.desktop) {
+                        // Set the type of scaling to 'show all'
+                        game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+                        // Add game background color to the page, to hide the white borders we might have
+                        document.body.style.backgroundColor = '#404';
+
+                        // Set the min and max width/height of the game
+                        game.scale.minWidth = 90;
+                        game.scale.minHeight = 160;
+                        game.scale.maxWidth = 720;
+                        game.scale.maxHeight = 1400;
+
+                        // Center the game on the screen
+                        game.scale.pageAlignVertically = true;
+                        game.scale.pageAlignHorizontally = true;
+                        // Apply the scale changes
+                        game.scale.setScreenSize(true);
+                    }
                     game.state.start('load');
                 }
             };
@@ -206,13 +237,11 @@
                     this.slowmoText.alpha = 0;
                     this.nukeText.alpha = 0;
 
-
                     // Release an enemy every 50 ms
                     game.time.events.loop(50, this.releaseEnemy, this);
 
                     // Release a bonus every 7 seconds
                     game.time.events.loop(7000, this.releaseBonus, this);
-
                 },
 
                 update: function() {
@@ -220,11 +249,10 @@
                     game.physics.arcade.overlap(this.player, this.enemies, this.restart, null, this);
                     game.physics.arcade.overlap(this.player, this.bonus, this.receiveBonus, null, this);
                     game.physics.arcade.overlap(this.enemies, this.bullets, this.killEnemy, null, this);
-                    game.physics.arcade.overlap(this.zeros, this.bullets, this.killEnemy, null, this);
 
                     this.movePlayer();
 
-                    if (this.cursor.up.isDown || this.wasd.up.isDown) {
+                    if (this.cursor.up.isDown || this.wasd.up.isDown || this.touch.fire()) {
                         this.fire();
                     }
 
@@ -235,7 +263,6 @@
                     this.scoreLabel.setText("Time survived: " + Math.floor(this.score / 1000));
                     if (localStorage.getItem('highScore') <= 0) this.highscoreLabel.setText("Highscore: " + Math.floor(this.score / 1000));
                     this.ammoLabel.setText("Ammo: " + this.ammo);
-
                 },
 
                 releaseEnemy: function() {
@@ -250,7 +277,6 @@
                 },
 
                 releaseBonus: function() {
-                    console.log("Bonus released");
                     this.bonus.revive();
                     this.bonus.reset((Math.random() * game.width - this.bonus.width / 2), -this.bonus.height / 2);
                     this.bonus.body.velocity.y = 250;
@@ -259,10 +285,10 @@
                 },
 
                 movePlayer: function() {
-                    if (this.cursor.left.isDown || this.wasd.left.isDown) {
+                    if (this.cursor.left.isDown || this.wasd.left.isDown || this.touch.left()) {
                         this.player.body.velocity.x = -300;
                     }
-                    else if (this.cursor.right.isDown || this.wasd.right.isDown) {
+                    else if (this.cursor.right.isDown || this.wasd.right.isDown || this.touch.right()) {
                         this.player.body.velocity.x = 300;
                     }
                     else {
@@ -286,7 +312,7 @@
 
                         this.timeForNextShot = game.time.now + 100;
                         this.ammo -= 1;
-                        this.game.add.tween(this.player).to({y:this.player.y + 5}, 50).to({y: this.player.y}, 50).start();
+                        game.add.tween(this.player).to({y:this.player.y + 5}, 30).to({y: this.player.y}, 70).start();
 
                     }
                 },
@@ -378,10 +404,29 @@
 
                     // Destroy text labels after 10 seconds.
                     game.time.events.add(10000, function(){this.untilFound.destroy(); this.fourOFour.destroy()}, this);
+                },
+
+                // Helpers for checking if touch pointer is in given x intervals of screen.
+                touch: {
+                    left: function() {
+                        if (game.input.totalActivePointers < 1) return false;
+                        return (game.input.pointer1 && game.input.pointer1.active && game.input.pointer1.x < game.world.centerX / 2) ||
+                                (game.input.pointer2 && game.input.pointer2.active  && game.input.pointer2.x < game.world.centerX / 2);
+                    },
+                    right: function() {
+                        if (game.input.totalActivePointers < 1) return false;
+                        return (game.input.pointer1 && game.input.pointer1.active && game.input.pointer1.x > game.world.centerX / 2 && game.input.pointer1.x < game.world.centerX)
+                                || (game.input.pointer2 && game.input.pointer2.active && game.input.pointer2.x > game.world.centerX / 2 && game.input.pointer2.x < game.world.centerX);
+                    },
+                    fire: function() {
+                        if (game.input.totalActivePointers < 1) return false;
+                        return (game.input.pointer1 && game.input.pointer1.active && game.input.pointer1.x > game.world.centerX)
+                                || (game.input.pointer2 && game.input.pointer2.active && game.input.pointer2.x > game.world.centerX);
+                    }
                 }
             };
 
-            var game = new Phaser.Game(800, 600, Phaser.AUTO, 'phaser-example');
+            var game = new Phaser.Game(600, 800, Phaser.AUTO, '404game');
 
             /* Define states */
             game.state.add('boot', bootState);
@@ -398,7 +443,7 @@
 
 <body>
 
-<div id="phaser-example"></div>
+<div id="404game"></div>
 
 </body>
 </html>
