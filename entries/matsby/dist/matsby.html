@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <style type="text/css">
-        @import url(http://fonts.googleapis.com/css?family=Geo);
         * {
             margin: 0;
             padding: 0;
@@ -163,7 +161,7 @@
 
                     // Create enemies
                     this.enemies = game.add.group();
-                    this.enemies.createMultiple(30, 'four');
+                    this.enemies.createMultiple(20, 'four');
                     this.enemies.createMultiple(20, 'zero');
                     this.enemies.setAll('checkWorldBounds', true);
                     this.enemies.setAll('outOfBoundsKill', true);
@@ -182,7 +180,6 @@
                     // Create bonus
                     this.bonus = game.add.sprite(-50, 50, 'bonus');
                     this.bonus.anchor.setTo(0.5, 0.5);
-                    this.bonus.reset((Math.random() * game.width - this.bonus.width / 2), -this.bonus.height / 2);
                     game.physics.arcade.enable(this.bonus);
                     this.bonus.collideWorldBounds = true;
                     this.bonus.outOfBoundsKill = true;
@@ -202,7 +199,7 @@
                         localStorage.setItem('highScore', 0);
 
                     // Score label
-                    this.scoreLabel = game.add.text(20, 20, 'Time survived: 0',
+                    this.scoreLabel = game.add.text(20, 20, 'Score: 0',
                             { font: '18px Arial', fill: '#fff' });
 
                     // Highscore label
@@ -218,7 +215,7 @@
                     this.addInitial404Message();
 
                     // Bonus type text labels. Will be shown when corresponding bonus is received
-                    this.ammoText = game.add.text(game.world.centerX, game.world.centerY, "+200 Ammo",
+                    this.ammoText = game.add.text(game.world.centerX, game.world.centerY, "+100 Ammo",
                         { font: '50px Arial', fill: "#fff" });
                     this.ammoText.anchor.setTo(0.5, 0.5);
                     this.slowmoText = game.add.text(game.world.centerX, game.world.centerY, "Slow motion",
@@ -237,8 +234,8 @@
                     this.slowmoText.alpha = 0;
                     this.nukeText.alpha = 0;
 
-                    // Release an enemy every 50 ms
-                    game.time.events.loop(50, this.releaseEnemy, this);
+                    // Release an enemy every 70 ms
+                    game.time.events.loop(70, this.releaseEnemy, this);
 
                     // Release a bonus every 7 seconds
                     game.time.events.loop(7000, this.releaseBonus, this);
@@ -259,8 +256,11 @@
                     // Score equals the elapsed time since game start
                     this.score += game.time.elapsed;
 
+                    // Increase difficulty as speed progresses by increasing enemy speed
+                    this.enemyVelocity += 0.01;
+
                     // Update text labels
-                    this.scoreLabel.setText("Time survived: " + Math.floor(this.score / 1000));
+                    this.scoreLabel.setText("Score: " + Math.floor(this.score / 1000));
                     if (localStorage.getItem('highScore') <= 0) this.highscoreLabel.setText("Highscore: " + Math.floor(this.score / 1000));
                     this.ammoLabel.setText("Ammo: " + this.ammo);
                 },
@@ -269,7 +269,7 @@
                     var enemy = this.enemies.getFirstDead();
                     if (!enemy || this.nuked) {return;}
                     game.physics.arcade.enable(enemy);
-                    enemy.reset(Math.floor(Math.random() * game.width - enemy.width), -enemy.height);
+                    enemy.reset(Math.floor(Math.random() * (game.width - enemy.width)), -enemy.height);
                     enemy.body.velocity.y = this.enemyVelocity;
                     if (this.enemyXVelocity) {
                         enemy.body.velocity.x = (Math.random() - 0.5) * 70;
@@ -278,7 +278,7 @@
 
                 releaseBonus: function() {
                     this.bonus.revive();
-                    this.bonus.reset((Math.random() * game.width - this.bonus.width / 2), -this.bonus.height / 2);
+                    this.bonus.reset((Math.random() * (game.width - this.bonus.width / 2)), -this.bonus.height / 2);
                     this.bonus.body.velocity.y = 250;
                     this.bonus.body.angularVelocity = 50;
                     game.add.tween(this.bonus.scale).to({x: 1.2, y: 1.2}, 500).to({x: 0.8, y: 0.8}, 500).loop().start();
@@ -312,7 +312,7 @@
 
                         this.timeForNextShot = game.time.now + 100;
                         this.ammo -= 1;
-                        game.add.tween(this.player).to({y:this.player.y + 5}, 30).to({y: this.player.y}, 70).start();
+                        game.add.tween(this.player).to({y:this.player.y + 5}, 50).to({y: this.player.y}, 50).start();
 
                     }
                 },
@@ -324,14 +324,15 @@
                     var bonusTypes = ["ammo", "slow-motion", "nuke"];
                     var bonus = bonusTypes[Math.floor(Math.random() * 3)];
                     if (bonus === "ammo") {
-                        this.ammo += 200;
+                        this.ammo += 100;
                         this.ammoText.alpha = 1;
                         game.add.tween(this.ammoText).to({alpha: 0}, 2000).start();
                     }
                     else if (bonus === "slow-motion") {
+                        var currentVelocity = this.enemyVelocity;
                         this.enemyVelocity = 150;
                         game.time.events.add(5000, function() {
-                            this.enemyVelocity = 300;
+                            this.enemyVelocity = currentVelocity;
                         }, this);
                         this.slowmoText.alpha = 1;
                         game.add.tween(this.slowmoText).to({alpha: 0}, 2000).start();
@@ -356,6 +357,7 @@
                     this.enemyExplosionEmitter.x = enemy.x;
                     this.enemyExplosionEmitter.y = enemy.y;
                     this.enemyExplosionEmitter.start(true, 500, null, 15);
+                    this.score += 100;
                     enemy.kill();
                 },
 
@@ -439,11 +441,7 @@
         };
     </script>
 </head>
-
-
 <body>
-
 <div id="404game"></div>
-
 </body>
 </html>
